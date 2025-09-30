@@ -12,144 +12,131 @@ typedef struct treeType {
 	tnode* parent;
 } treeType;
 
-int main()
+void linked_tree_add(treeType* tree, char pitem, char litem, char ritem)
 {
-	treeType* tree = NULL;
-	tnode* node1, * node2, * node3, * node4, * node5;
-	tnode* nptr = NULL;
+	// TOP->DOWN ¹æ½Ä : ·çÆ® ³ëµå »ı¼º
+	// ÇÏ³ªÀÇ ¼­ºêÆ®¸®¸¦ ±¸¼ºÇÏ´Â °úÁ¤
+	// ¾Æ·¡·Î ´Ù¸¥ ¼­ºêÆ®¸®¸¦ ºÙÀÎ´Ù
+	tnode* newNode = NULL;
+
+	// ·çÆ®°¡ ¾øÀ» °æ¿ì ·çÆ® ³ëµå¸¦ »ı¼º
+	if (tree->root == NULL) {
+		newNode = (tnode*)malloc(sizeof(tnode));
+		newNode->data = pitem;
+		tree->root = newNode;
+		tree->parent = newNode;
+	}
+
+	// Àü´ŞµÇ´Â ºÎ¸ğ³ëµå ¾ÆÀÌÅÛ°ú ÇöÀç ¼­ºê Æ®¸®ÀÇ ºÎ¸ğ¿Í ÀÏÄ¡ÇÏÁö ¾Ê´Ù¸é
+	if (pitem != tree->parent->data)
+	{
+		printf("Parent node Error\n");
+		return;
+	}
+
+	// ¿ŞÂÊ ÀÚ½ÄÀÌ ÀÖ´Ù¸é
+	if (litem != '-')
+	{
+		tree->parent->left = (tnode*)malloc(sizeof(tnode));
+		tree->parent->left->data = litem;
+		tree->parent->left->left = NULL;
+		tree->parent->left->right = NULL;
+	}
+	// ÀÚ½ÄÀÌ ¾ø´Ù¸é
+	else
+	{
+		tree->parent->left = NULL;
+	}
+
+	// ¿À¸¥ÂÊ ÀÚ½ÄÀÌ ÀÖ´Ù¸é
+	if (ritem != '-')
+	{
+		tree->parent->right = (tnode*)malloc(sizeof(tnode));
+		tree->parent->right->data = ritem;
+		tree->parent->right->left = NULL;
+		tree->parent->right->right = NULL;
+	}
+	// ÀÚ½ÄÀÌ ¾ø´Ù¸é
+	else
+	{
+		tree->parent->right = NULL;
+	}
+	
+}
+
+void linked_tree_display(tnode* parent)
+{
+	// ÇÏ³ªÀÇ ¼­ºêÆ®¸®ÀÇ Á¤º¸¸¦ Ãâ·Â
+	// Àü´ŞµÇ´Â Á¤º¸´Â ¼­ºêÆ®¸®ÀÇ ºÎ¸ğ³ëµå
+
 	char pitem, litem, ritem;
 
-	tree = (treeType*)malloc(sizeof(treeType));
+	// Æ®¸®°¡ Á¸ÀçÇÏÁö ¾Ê´Â °æ¿ì
+	if (parent == NULL)
+	{
+		printf("Tree is empty.");
+		return;
+	}
+
+	pitem = parent->data;
+	if (parent->left) {// nptr->left != NULL
+		litem = parent->left->data;
+	}
+	else
+	{
+		litem = '-';
+	}
+
+	if (parent->right) {// nptr->right != NULL
+		ritem = parent->right->data;
+	}
+	else
+	{
+		ritem = '-';
+	}
+
+	printf("P:%c -> LC:%c, RC:%c\n", pitem, litem, ritem);
+}
+
+treeType* linked_tree_init(void)
+{
+	// Çì´õ³ëµå ÃÊ±âÈ­
+	treeType* tree = (treeType*)malloc(sizeof(treeType));
 	tree->root = NULL;
 	tree->parent = NULL;
+	return tree;
+}
 
-	/* TOP->DOWN ¹æ½Ä
-	// ·çÆ® ³ëµå »ı¼º
-	// TOP-down ¹æ½Ä
-	// ·çÆ®¸¦ ¸¸µé°í ºÎ¸ğ¸¦ ¸¸µé°í ÀÚ½ÄÀ» ¸¸µå´Â °úÁ¤
-	node1 = (tnode*)malloc(sizeof(tnode));
-	node1->data = 'A';
-	node1->left = NULL;
-	node1->right = NULL;
-	// ÇöÀç ³ëµå¸¦ ·çÆ® ³ëµå·Î ÁöÁ¤
-	tree->root = node1;
+int main()
+{
+	treeType* tree = linked_tree_init();
+	
+	// Æ®¸® ±¸¼º
+	// ·çÆ®ºÎÅÍ ÇÏ³ª¾¿ ¼­ºêÆ®¸®¸¦ ±¸¼º
+	// ºÎ¸ğ³ëµå Æ÷ÀÎÅÍ´Â ¼öµ¿À¸·Î ÀÌµ¿ÇÏ¿© ¼­ºêÆ®¸®¸¦ ±¸¼º
 
-	// ¿ŞÂÊ ÀÚ½Ä
-	// ¼­ºêÆ®¸®ÀÇ ºÎ¸ğ³ëµå¸¦ ÁöÁ¤
 	tree->parent = tree->root;
-	node2 = (tnode*)malloc(sizeof(tnode));
-	node2->data = 'B';
-	node2->left = NULL;
-	node2->right = NULL;
-	// ÇöÀç ³ëµå¸¦ ºÎ¸ğÀÇ ¿ŞÂÊ ÀÚ½ÄÀ¸·Î ¿¬°á
-	tree->parent->left = node2;
+	linked_tree_add(tree, 'A', 'B', 'C');
+	// Æ®¸®Æ÷ÀÎÅÍ, ºÎ¸ğ¾ÆÀÌÅÛ, ¿ŞÂÊ ÀÚ½Ä ¾ÆÀÌÅÛ, ¿À¸¥ÂÊ ÀÚ½Ä ¾ÆÀÌÅÛ
+	// ÀÚ½ÄÀÌ ¾øÀ» °æ¿ì '-'·Î Àü´Ş
 
-	// ¿À¸¥ÂÊ ÀÚ½Ä
-	// ¼­ºêÆ®¸®ÀÇ ºÎ¸ğ³ëµå¸¦ ÁöÁ¤
-	node3 = (tnode*)malloc(sizeof(tnode));
-	node3->data = 'C';
-	node3->left = NULL;
-	node3->right = NULL;
-	// ÇöÀç ³ëµå¸¦ ºÎ¸ğÀÇ ¿À¸¥ÂÊ ÀÚ½ÄÀ¸·Î ¿¬°á
-	tree->parent->right = node3;
-
-	// ºÎ¸ğ³ëµå B·Î ÀÌµ¿
 	tree->parent = tree->root->left;
+	linked_tree_add(tree, 'B', 'D', '-');
 
-	// BÀÇ ¿ŞÂÊ ÀÚ½Ä
-	node4 = (tnode*)malloc(sizeof(tnode));
-	node4->data = 'D';
-	node4->left = NULL;
-	node4->right = NULL;
-	// ÇöÀç ³ëµå¸¦ ºÎ¸ğÀÇ ¿À¸¥ÂÊ ÀÚ½ÄÀ¸·Î ¿¬°á
-	tree->parent->left = node4;
-	// BÀÇ ¿À¸¥ÂÊÀº ¾øÀ½
-
-	// ºÎ¸ğ³ëµå C·Î ÀÌµ¿
 	tree->parent = tree->root->right;
+	linked_tree_add(tree, 'C', '-', 'E');
 
-	// CÀÇ ¿À¸¥ÂÊ ÀÚ½Ä
-	node5 = (tnode*)malloc(sizeof(tnode));
-	node5->data = 'E';
-	node5->left = NULL;
-	node5->right = NULL;
-	// ÇöÀç ³ëµå¸¦ ºÎ¸ğÀÇ ¿À¸¥ÂÊ ÀÚ½ÄÀ¸·Î ¿¬°á
-	tree->parent->right = node5;
-	// CÀÇ ¿ŞÂÊÀº ¾øÀ½
-	*/
+	// Æ®¸® Ãâ·Â
+	// Ãâ·ÂÇÒ ¼­ºê Æ®¸®ÀÇ ºÎ¸ğ³ëµå¸¦ ¼öµ¿À¸·Î ÁöÁ¤
 
-
-	// Bottom-Up ¹æ½Ä : ÀÚ½ÄÀ» ¸ÕÀú ¸¸µé°í ¸¶Áö¸·¿¡ ·çÆ®
-	node5 = (tnode*)malloc(sizeof(tnode));
-	node5->data = 'E';
-	node5->left = NULL;
-	node5->right = NULL;
-
-	node4 = (tnode*)malloc(sizeof(tnode));
-	node4->data = 'D';
-	node4->left = NULL;
-	node4->right = NULL;
-
-	node3 = (tnode*)malloc(sizeof(tnode));
-	node3->data = 'C';
-	node3->left = NULL;
-	node3->right = node5;
-
-	node2 = (tnode*)malloc(sizeof(tnode));
-	node2->data = 'B';
-	node2->left = node4;
-	node2->right = NULL;
-
-	// ·çÆ® ³ëµå
-	node1 = (tnode*)malloc(sizeof(tnode));
-	node1->data = 'A';
-	node1->left = node2;
-	node1->right = node3;
-
-	// ·çÆ® ³ëµå ÁöÁ¤
-	tree->root = node1;
-
-	// Æ®¸® ­ˆ·Â
-	// ¼­ºê Æ®¸® ´ÜÀ§·Î Ãâ·Â
-	// P:A -> LC:B, RC:C
-	// P:B -> LC:D, RC:-
-	// P:C -> LC:-, RC:E
-
+	printf("Linked Binary Tree\n");
 	// ºÎ¸ğ³ëµå¸¦ ·çÆ®·Î ÀÌµ¿
 	tree->parent = tree->root;
-	nptr = tree->parent;
-
-	pitem = '-', litem = '-', ritem = '-';
-	pitem = nptr->data;
-	if (nptr->left) {// nptr->left != NULL
-		litem = nptr->left->data;
-	}
-	if (nptr->right) {// nptr->right != NULL
-		ritem = nptr->right->data;
-	}
-	printf("P:%c -> LC:%c, RC:%c\n", pitem, litem, ritem);
-
-	nptr = tree->parent->left;
-	pitem = '-', litem = '-', ritem = '-';
-	pitem = nptr->data;
-	if (nptr->left) {// nptr->left != NULL
-		litem = nptr->left->data;
-	}
-	if (nptr->right) {// nptr->right != NULL
-		ritem = nptr->right->data;
-	}
-	printf("P:%c -> LC:%c, RC:%c\n", pitem, litem, ritem);
-
-	nptr = tree->parent->right;
-	pitem = '-', litem = '-', ritem = '-';
-	pitem = nptr->data;
-	if (nptr->left) {// nptr->left != NULL
-		litem = nptr->left->data;
-	}
-	if (nptr->right) {// nptr->right != NULL
-		ritem = nptr->right->data;
-	}
-	printf("P:%c -> LC:%c, RC:%c\n", pitem, litem, ritem);
-
+	linked_tree_display(tree->parent);
+	// ¿ŞÂÊ ÀÚ½ÄÀÇ ¼­ºê Æ®¸®
+	linked_tree_display(tree->parent->left);
+	// ¿À¸¥ÂÊ ÀÚ½ÄÀÇ ¼­ºê Æ®¸®
+	linked_tree_display(tree->parent->right);
+	
 	return 0;
 }
