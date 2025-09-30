@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <malloc.h>
+#define MAX_SiZE 5 // 치환 명령을 이용해 배열의 크기 고정
+
+//구조체를 이용한 변수 선언
+typedef struct listType
+{
+    int data[MAX_SIZE]; // 배열을 이용한 리스트
+    int length; // 리스트의 아이템 개수(리스트의 길이)
+} listType; // 이 구조체의 접근 변수명은 'listType'으로 함
+
+리스트 출력 함수
+{
+    //인덱스 변수 생성
+    int index;
+
+    printf("Linear List = [");
+    
+    //리스트 탐색
+    for (index = 0; index < list->length; index++)
+    {
+    //인덱스를 0으로 시작하고 인덱스가 리스트 길이값보다 작을 때,
+    //인덱스를 1증가시켜라
+        인덱스값에 해당하는 리스트배열의 데이터 출력
+        if (index != list->length-1)
+        // 인덱스가 마지막이 아니라면 ','를 붙여라
+            printf(",")
+     }
+     printf("]\n");
+
+}
+
+//데이터 삽입 함수
+void linear_list_insert(listType* list, int pos, int item)
+{
+	인덱스 변수 생성
+    int index;
+    
+	// 리스트가 가득찰 경우
+	if (list->length == MAX_SIZE)
+	{
+		printf("List is Full!!\n");
+		return; // 함수 종료
+	}
+
+	// 삽입 위치에 대한 예외처리
+	if (pos < 1 || pos > list->length + 1)
+    // pos 값이 1보다 작거나, 리스트 길이보다 크거나
+	{
+		printf("Postion out of range!!\n");
+		return;
+	}
+	
+	for (index = list->length - 1; index >= pos - 1; index--) {
+		list->data[index + 1] = list->data[index];
+	}
+	list->data[pos - 1] = item;
+	(list->length)++;
+}
+
+리스트 생성 및 초기화
+{
+    // 동적 메모리 할당
+    listType* list = (listType*)malloc(sizeof(lisType));
+    //'list' 이름을 가진 lisType구조체 구조를 가진 변수 생성
+    //변수의 크기를 lisType구조체 크기로 동적 메모리 할당
+
+    list->length = 0;
+    //list변수의 length 변수를 0으로 초기화
+
+    return list;
+    //생성된 list를 반환
+}
+
+메인 함수
+{
+    //리스트 생성 및 초기화
+    listType* list = linear_list_int();
+    //메뉴 실행
+    linear_list_menu(list);
+    //리스트 종료 및 삭제
+    free(list);
+
+    return 0;
+}
