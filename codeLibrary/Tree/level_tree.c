@@ -3,12 +3,12 @@
 
 typedef struct tnode {
 	char data;
-	struct tnode* left; // 왼쪽 자식
-	struct tnode* right; // 오른쪽 자식
+	struct tnode* left;  // 왼쪽자식
+	struct tnode* right; // 오른쪽자식
 } tnode;
 
 typedef struct treeType {
-	tnode* root;  // 현재 트리의 루트 노드
+	tnode* root;    // 현재 트리의 루트노드
 	tnode* parent;  // 현재 서브트리의 부모노드
 } treeType;
 
@@ -22,7 +22,7 @@ typedef struct qnode {
 typedef struct queueType {
 	int length;
 	qnode* front;  // 큐의 삭제노드 포인터 (첫번째 노드)
-	qnode* rear;  // 큐의 삽입노드 포인터 (마지막 노드)
+	qnode* rear;   // 큐의 삽입노드 포인터 (마지막 노드)
 } queueType;
 
 // level order에 필요한 큐의 연산
@@ -64,7 +64,7 @@ void linked_queue_insert(queueType* queue, tnode* item)
 	// 노드가 없는 경우
 	if (queue->rear == NULL) {
 		queue->rear = newNode;
-		queue->front = newNode; // 첫 번째 노드를 가리켜야 함
+		queue->front = newNode;  // 첫 번째 노드를 가리켜야 함
 	}
 
 	// 노드가 최소 1개 이상 있는 경우
@@ -86,17 +86,13 @@ queueType* linked_queue_init(void)
 	return queue;
 }
 
+// level order 순회
 void tree_level_order(treeType* tree)
 {
 	// 큐를 생성
 	queueType* queue = linked_queue_init();
-	// 루트 노드를 큐에 삽입
+	// 루트 노드를 큐에 먼저 삽입
 	linked_queue_insert(queue, tree->root);
-
-	if (tree->parent == NULL) {
-		printf("No data...\n");
-		return;
-	}
 
 	// 큐에 노드가 있으면 반복, 없으면 중단
 	printf("Binary Tree Level Order = [");
@@ -145,7 +141,7 @@ void linked_tree_add(treeType* tree, char pitem, char litem, char ritem)
 		tree->parent = newNode;
 	}
 
-	// 전달되는 부모노드 아이템과 현재 서브 틀리의 부모와 일치하지 않다면
+	// 전달되는 부모노드 아이템과 현재 서브 트리의 부모와 일치하지 않다면
 	if (pitem != tree->parent->data) {
 		printf("Parent node Error\n");
 		return;
@@ -239,40 +235,38 @@ void linked_tree_menu(treeType* tree)
 	// level order를 위한 큐 생성
 	queueType* queue = linked_queue_init();
 
-	while (1)
-	{
+	while (1) {
 		printf("Linked Binary Tree 1.Add, 2.Level Order, 3.Display, 4.Exit\n");
 		printf("Input the menu ? ");
 		scanf_s("%d", &menu);
 
-		if (menu == 1)
-		{
+		if (menu == 1) {
 			tree->parent = linked_queue_delete(queue);
 
-			// 루트 노드를 만들지 결정 (루트 존재 여부 확인)
-			if (tree->root == NULL)
-			{
-				// 루트 생성
+			// 루트 노드를 만들지 결정 (루트가 있느냐 없느냐)
+			if (tree->root == NULL) {
+				// 루트를 생성
 				printf("root ? ");
 				scanf_s("\n%c", &pitem, 1);
 			}
 			// 루트 노드는 존재하지만 큐가 비어있을 경우
-			else if (tree->parent == NULL)
-			{
-				printf("sub tree is none\n");
+			else if (tree->parent == NULL) {
+				printf("sub tree is None\n");
 				continue;
 			}
-			else
-			{
+
+			else {
 				// 생성할 서브 트리의 부모를 결정
 				pitem = tree->parent->data;
 			}
 
+			// 왼쪽과 오른쪽 자식을 지정
+			// 자식이 없을 경우 '-' 를 입력
 			printf("Input Parent %c Left Child : ", pitem);
 			scanf_s("\n%c", &litem, 1);
 			printf("Input Parent %c Right Child : ", pitem);
 			scanf_s("\n%c", &ritem, 1);
-			
+
 			// 서브 트리를 생성
 			linked_tree_add(tree, pitem, litem, ritem);
 
@@ -281,21 +275,21 @@ void linked_tree_menu(treeType* tree)
 			if (tree->parent->right)
 				linked_queue_insert(queue, tree->parent->right);
 		}
-		else if (menu == 2)
-		{
+
+		else if (menu == 2) {
 			tree_level_order(tree);
 		}
-		else if (menu == 3)
-		{
+
+		else if (menu == 3) {
 			linked_tree_display(tree);
 		}
-		else if (menu == 4)
-		{
+
+		else if (menu == 4) {
 			break;
 		}
-		else
-		{
-			printf("Menu Error!\n");
+
+		else {
+			printf("menu error\n");
 		}
 	}
 }
