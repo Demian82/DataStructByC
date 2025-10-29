@@ -272,10 +272,10 @@ void tree_post_order(treeType* tree)
 
 		// 자식이 있는지 검사
 		// 자식이 있으면 자식을 스택에 push
-		if (tree->parent->right)
-			linked_stack_push(stack, tree->parent->right);
 		if (tree->parent->left)
 			linked_stack_push(stack, tree->parent->left);
+		if (tree->parent->right)
+			linked_stack_push(stack, tree->parent->right);
 		}
 
 	printf("Binary Tree Pre Order = [");
