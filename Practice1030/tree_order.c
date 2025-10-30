@@ -176,122 +176,42 @@ void tree_level_order(treeType* tree)
 	printf("]\n");
 }
 
+// 재귀 호출을 사용한 트리의 순회
+// 함수의 인수로 전달하는 데이터는 서브트리의 부모 노드
 // 전위 순회 (pre order)
-void tree_pre_order(treeType* tree)
+void tree_pre_order(tnode* parent)
 {
 	// P -> LC -> RC
-	// 스택을 사용하여 구현
-
-	// pre order 순회를 위한 스택의 생성
-	stackType* stack = linked_stack_init();
-
-	// 루트 노드를 스택에 넣고 시작
-	linked_stack_push(stack, tree->root);
-
-	printf("Binary Tree Pre Order = [");
-	while (stack->top) { // 스택에 아이템이 있으면 반복
-		// 방문(visit)은 스택에서 꺼낸(pop) 노드로 부터 출발
-		// 꺼낸 트리 노드를 부모 노드로 지정
-		tree->parent = linked_stack_pop(stack);
-
-		printf("%c", tree->parent->data);  // 방문
-
-		// 자식이 있는지 검사 (오른쪽->왼쪽)
-		// 자식이 있으면 자식을 스택에 push
-		if (tree->parent->right)
-			linked_stack_push(stack, tree->parent->right);
-		if (tree->parent->left)
-			linked_stack_push(stack, tree->parent->left);
-
-		// -> 표시
-		if (stack->top) {
-			printf("->");
-		}
+	if (parent) {
+		printf("%c", parent->data);
+		tree_pre_order(parent->left);
+		tree_pre_order(parent->right);
 	}
-	printf("]\n");
 }
 
 // 중위 순회
-void tree_in_order(treeType* tree)
+void tree_in_order(tnode* parent)
 {
-	// 중위: LC -> P -> RC
-	// 가장 왼쪽의 자식을 먼저 찾음(왼쪽 자식을 먼저 방문)
-	// 부모노드로 다시 방문 -> 스택을 활용
-	// 이후 오른쪽을 방문 -> 다시 가장 왼쪽 자식을 먼저 찾음
-
-	// 스택의 생성
-	stackType* stack = linked_stack_init();
-	tree->parent = tree->root;
-	// 스택이 빌 때까지(스택에 노드가 있으면)
-	// 스택이 비어있더라도 자식노드가 있다면
-	printf("Binary Tree Pre Order = [");
-	while (stack->top || tree->parent) {
-		// 왼쪽으로 이동
-		if (tree->parent) {
-			// 부모가 있으면 스택에 push
-			// 다시 되돌아 와야 하므로
-			linked_stack_push(stack, tree->parent);
-			tree->parent = tree->parent->left;
-		}
-		// 현재 부모가 NULL이라면
-		else {
-			// 스택에서 pop 방문
-			tree->parent = linked_stack_pop(stack);
-			printf("%c", tree->parent->data); // 부모 방문
-			// 오른쪽 자식으로 이동
-			tree->parent = tree->parent->right;
-			// 구분문자
-			if (stack->top || tree->parent)
-				printf("->");
-		}
+	// LC -> P -> RC
+	if (parent) {
+		
+		tree_in_order(parent->left);
+		printf("%c", parent->data);
+		tree_in_order(parent->right);
 	}
-	printf("]\n");
+	
 }
 
 // 후위 순회 (post order)
-void tree_post_order(treeType* tree)
+void tree_post_order(tnode* parent)
 {
-	// pre order : P -> RC -> LC
-	// 스택을 사용하여 역순으로 출력
 	// LC -> RC -> P
-
-	// post order 순회를 위한 스택의 생성
-	// pre order 결과를 저장할 스택 생성
-	stackType* stack = linked_stack_init();
-
-	// pre order 결과를 역순으로 저장할 스택 생성
-	stackType* outStack = linked_stack_init();
-
-	// 루트 노드를 스택에 넣고 시작
-	linked_stack_push(stack, tree->root);
-
-	while (stack->top) { // 스택에 아이템이 있으면 반복
-		// 방문(visit)은 스택에서 꺼낸(pop) 노드로 부터 출발
-		// 꺼낸 트리 노드를 부모 노드로 지정
-		tree->parent = linked_stack_pop(stack);
-
-		// 부모 노드를 다시 스택에 저장
-		linked_stack_push(outStack, tree->parent);
-
-		// 자식이 있는지 검사( LC -> RC)
-		// 자식이 있으면 자식을 스택에 push
-		if (tree->parent->left)
-			linked_stack_push(stack, tree->parent->left);
-		if (tree->parent->right)
-			linked_stack_push(stack, tree->parent->right);
-		}
-
-	printf("Binary Tree Pre Order = [");
-	while (outStack->top) { // outStack에 아이템이 있으면 반복
-		tree->parent = linked_stack_pop(outStack);
-		printf("%c", tree->parent->data);  // 방문
-
-		// -> 표시
-		if (outStack->top) {
-			printf("->");
-		}
+	if (parent) {
+		
+		tree_post_order(parent->left);
+		tree_post_order(parent->right);
+		printf("%c", parent->data);
 	}
-	printf("]\n");
 }
 
 // linked tree의 연산
@@ -405,8 +325,8 @@ void linked_tree_menu(treeType* tree)
 	queueType* queue = linked_queue_init();
 
 	while (1) {
-		printf("Linked Binary Tree 1.Add, 2.Level Order, 3.Pre Oreder, "
-			"4.In Order, 5.Post Order, 6.Display, 7.Exit\n");
+		printf("Linked Binary Tree 1.Add, 2.Level Order, 3.Tree Oreder, "
+			"4.Display, 5.Exit\n");
 		printf("Input the menu ? ");
 		scanf_s("%d", &menu);
 
@@ -451,22 +371,25 @@ void linked_tree_menu(treeType* tree)
 		}
 
 		else if (menu == 3) {
-			tree_pre_order(tree);
+			printf("Pre Order = [");
+			tree_pre_order(tree->root);
+			printf("]\n");
+
+			printf("In Order = [");
+			tree_in_order(tree->root);
+			printf("]\n");
+
+			printf("Post Order = [");
+			tree_post_order(tree->root);
+			printf("]\n");
+			
 		}
 
 		else if (menu == 4) {
-			tree_in_order(tree);
-		}
-
-		else if (menu == 5) {
-			tree_post_order(tree);
-		}
-
-		else if (menu == 6) {
 			linked_tree_display(tree);
 		}
 
-		else if (menu == 7) {
+		else if (menu == 5) {
 			break;
 		}
 
