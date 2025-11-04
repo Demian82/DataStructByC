@@ -224,7 +224,7 @@ void tree_in_order(treeType* tree)
 	tree->parent = tree->root;
 	// 스택이 빌 때까지(스택에 노드가 있으면)
 	// 스택이 비어있더라도 자식노드가 있다면
-	printf("Binary Tree Pre Order = [");
+	printf("Binary Tree In Order = [");
 	while (stack->top || tree->parent) {
 		// 왼쪽으로 이동
 		if (tree->parent) {
@@ -281,7 +281,7 @@ void tree_post_order(treeType* tree)
 			linked_stack_push(stack, tree->parent->right);
 		}
 
-	printf("Binary Tree Pre Order = [");
+	printf("Binary Tree Post Order = [");
 	while (outStack->top) { // outStack에 아이템이 있으면 반복
 		tree->parent = linked_stack_pop(outStack);
 		printf("%c", tree->parent->data);  // 방문

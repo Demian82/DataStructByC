@@ -199,7 +199,6 @@ void tree_in_order(tnode* parent)
 		printf("%c", parent->data);
 		tree_in_order(parent->right);
 	}
-	
 }
 
 // 후위 순회 (post order)
