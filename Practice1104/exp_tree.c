@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <malloc.h>
-#include <stdlib.h>
 #define MAX_SIZE 30
 
 // 수식 : 연산자와 피연산자로 구성 (a+b*c)
@@ -14,7 +13,7 @@
 // postfix(후위) : 피연산자가 연산자보다 먼저 나옴: ab+
 
 // 컴파일러는 infix로 표현된 수식을 postfix로 변환 후 연산을 수행
-// postfix로 표혆된 수식의 연산은 스택을 사용
+// postfix로 표현된 수식의 연산은 스택을 사용
 
 // postfix로 표현된 연산식을 수식 트리로 만들기
 // 1. postfix 수식을 배열로 저장
